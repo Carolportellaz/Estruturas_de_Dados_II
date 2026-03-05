@@ -1,49 +1,94 @@
+import java.util.Scanner;
+
 public class App{
-    static Integer vet [] = new Integer[7];
-    static Integer vetR [] = {10, 9, 6, 17, 36, 0, 5};
-    static int ultimo = -1;
+    static Numero vet [];
+    static int indice_ultimo = -1;
+    static Scanner teclado = new Scanner(System.in);
     static int indice_pai;
-    static int cal1;
-    static int cal2;
-    static int indice_esquerda;
+    static int tamanho;
     static int indice_direita;
-    static int indice_maior;
+    static int indice_esquerda;
+    static int indice_menor;
+    static boolean trocou;
 
     public static void main(String[] args) {
 
-        for(int i = 0; i < vet.length; i++){
-            try{
-                addEl(vetR[i]);
-            }
+        tamanho = teclado.nextInt();
 
-            catch(Exception e){
-                System.out.println("Ocorreu o seguinte erro " + e.getMessage());
-            }
+        vet = new Numero[tamanho];
+
+        for(int i = 0; i < vet.length; i++){
+            add(teclado.nextInt(), teclado.nextInt());
+        }
+
+        try{
+            sort(0);
+        }
+
+        catch(Exception e){
+            System.out.println("Ocorreu o seguinte erro com o sort " + e.getMessage());
         }
 
         for(int i = 0; i < vet.length; i++){
-            System.out.println(vet[i]);
+            System.out.println(vet[i].n);
         }
 
-
+        teclado.close();
     }
 
-    public static void addEl(int n) throws Exception{
-        vet[++ultimo] = n;
+    public static void add(int n, int tempo){
+        vet[++indice_ultimo] = new Numero(n, tempo);
+        
 
-        int indice = ultimo;
-        int pai = vet[indice / 2];
+        // VENDO SE É MENOR QUE SEU PAI //
+        if(indice_ultimo > 0){
+            indice_pai = indice_pai / 2;
 
-        // enquanto (i > 0 && vet[i] > pai(vet[i]))
-        // troca i <=> pai(i)
+            if(vet[indice_pai].n > vet[indice_ultimo].n){
+                Numero pai = vet[indice_pai];
+                Numero ultimo = vet[indice_ultimo];
 
-        while(indice > 0 && n > pai){
-            vet[indice] = pai;
-            vet[indice / 2] = n;
-            
-            // ATUALIZANDO OS VALORES //
-            indice = indice / 2;
-            pai = vet[indice / 2];
+                vet[indice_pai] = ultimo;
+                vet[indice_ultimo] = pai;
+            }
         }
+    }
+
+
+    public static int sort(int i){
+        indice_pai = i / 2;
+        indice_esquerda = 2 * i + 1;
+        indice_direita = 2 * i + 2;
+        trocou = false;
+
+        // TROCAR O PAI COM O MENOR DE SEUS FILHOS //
+        if(i < vet.length - 1){
+            if(vet[indice_direita].n != 0 && vet[indice_direita].n < vet[indice_esquerda].n){
+                indice_menor = indice_direita;
+            }
+
+            if(vet[indice_direita].n != 0 && vet[indice_esquerda].n <= vet[indice_direita].n){
+                indice_menor = indice_esquerda;
+            }
+
+            // VEERFICANDO COM O PAI //
+            if(vet[indice_menor].n < vet[indice_pai].n){
+                Numero menor = vet[indice_menor];
+                Numero pai = vet[indice_pai];
+
+                vet[indice_menor] = pai;
+                vet[indice_pai] = menor;
+                trocou = true;
+            }
+
+            // SÓ MUDO O I QUANDO JÁ CONFERI //
+            if(!trocou){
+                i++;
+            }
+
+            return sort(i);
+        }
+
+        return 0;
     }
 }
