@@ -1,0 +1,49 @@
+public class App{
+    static boolean trocou = false;
+
+    public static void main(String[] args) {
+        int vet [] = {2, 81, 17, 1, 10};
+        int pivo = vet.length - 1;
+
+        try{
+            quick(vet, pivo, 0, -1, -1, -1);
+        }
+
+        catch(Exception e){
+            System.out.println("Ocorreu o seguinte erro " + e.getMessage());
+        }
+    }
+
+    public static void quick(int vet [], int pivo, int indice, int i, int j, int ultJ){
+        if(!(indice > vet.length)){
+            if(vet[indice] < vet[pivo]){
+                i++;
+                indice++;
+                j++;
+
+                if(trocou == true){
+                    int n1 = vet[indice];
+                    int n2 = vet[ultJ];
+
+                    vet[indice] = n2;
+                    vet[ultJ] = n1;
+                    ultJ++;
+
+                    trocou = false;  
+                }
+            }
+
+            else{
+                if(vet[indice] >= vet[pivo]){
+                    
+                    j++;
+                    trocou = true;
+                }
+            }
+            
+            quick(vet, pivo, indice++, i, j, ultJ);
+        }
+    
+    }
+       
+}
